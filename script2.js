@@ -1,10 +1,12 @@
+// D3.js is a JavaScript library for creating data-driven documents.The .min version of the library is the minified version of the library, which means it has been compressed to reduce the file size and make it faster to load. Use D3's scales and axis generators to create the scales and axes for the barchart.Append the elements and scales to the SVG element.
+
 import ("https://d3js.org/d3.v6.min.js")
 
 
 let userLogin = "Peter"
 let person= []
-const MAXServerQueryLimit=50
-let offset = [0,MAXServerQueryLimit]
+const MAXServerQueryCapacity=50
+let offset = [0,MAXServerQueryCapacity]
 let transaction =[]
 let transactionTemp =[0]
 
@@ -70,6 +72,12 @@ await myProgress().then(data => {
   });
 })
 .catch(err => console.error(err))
+}
+
+
+if (transactionTemp.length == 0 && progressTemp.length == 0) {
+  document.querySelector(".loadingON").style.display = "none"
+  document.querySelector(".loadingOFF").style.display = "block"
 }
 
 // console.log("aaa",person)  // 0
@@ -273,11 +281,6 @@ xpLondonPiscineGOUniqueMax.sort((a, b) => (a.updatedAt > b.updatedAt) ? 1 : -1)
 
 
 
-
-
-
-
-
 // console.log("xpLondonUniqueMax",xpLondonUniqueMax)
 // console.log("xpLondonPiscineJS_total",xpLondonPiscineJS_total)
 // console.log("xpLondonPiscineJS",xpLondonPiscineJS)
@@ -296,7 +299,7 @@ let SumXpLondonWeekFour = (xpLondonWeekFourUniqueMax.reduce((a, b) => a + b.amou
 let SumXpLondonCheckPoints = (xpLondonCheckPointsUniqueMax.reduce((a, b) => a + b.amount, 0))/1000
 let SumXpLondonPiscineJS = (xpLondonPiscineJSUniqueMax.reduce((a, b) => a + b.amount, 0))/1000
 let SumXpLondonPiscineJS_total = (xpLondonPiscineJS_total.reduce((a, b) => a + b.amount, 0))/1000
-//fix the sum to 0 decimal places and print the sum
+//fix the sum to 1 decimal places and print the sum
 myXP.push(Number(SumXpLondonPiscineGO.toFixed(1)),Number(SumXpLondonWeekFour.toFixed(1)),Number(SumXpLondonPiscineJS.toFixed(1)),Number((SumXpLondon+SumXpLondonCheckPoints+SumXpLondonPiscineJS_total).toFixed(1)))
 
 // console.log("myXP=",myXP) // 0
@@ -549,6 +552,7 @@ for (const point of pointCoordinates) {
   circle.setAttribute("fill", "magenta");
 
   const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  
   circle.addEventListener("mouseover", function() {
     // Change the fill color of the circle when it is clicked 
     valueText.setAttribute('x', chartWidth / 2);
@@ -676,21 +680,6 @@ for (let i = 0; i < MAXlevelLondonWeekFourMAX.length; i++) {
 }
 
 
-// let MAXlevelLondonPiscineJSUnique= [...new Set(MAXlevelLondonPiscineJS.map(item => item.path))]
-// let MAXlevelLondonPiscineJSMAX = []
-// for (let i = 0; i < MAXlevelLondonPiscineJSUnique.length; i++) {
-//   let MAXlevelLondonPiscineJSMAXTemp = MAXlevelLondonPiscineJS.filter(pathFilterUnique)
-//     function pathFilterUnique(level) {
-//       return level
-//       .path == MAXlevelLondonPiscineJSUnique[i]
-//     }
-//   MAXlevelLondonPiscineJSMAXTemp.sort((a, b) => (a.amount > b.amount) ? -1 : 1)
-//   MAXlevelLondonPiscineJSMAX.push(MAXlevelLondonPiscineJSMAXTemp[0])
-// }
-// MAXlevelLondonPiscineJSMAX.sort((a, b) => (a.amount > b.amount) ? 1 : -1)
-// for (let i = 0; i < MAXlevelLondonPiscineJSMAX.length; i++) {
-//   MAXlevelLondonPiscineJSMAX[i].createdAt = new Date(MAXlevelLondonPiscineJSMAX[i].createdAt)
-// }
 let MAXlevelLondonPiscineJSUnique= [...new Set(MAXlevelLondonPiscineJS.map(item => item.amount))]
 let MAXlevelLondonPiscineJSMAX = []
 for (let i = 0; i < MAXlevelLondonPiscineJSUnique.length; i++) {
@@ -832,7 +821,7 @@ svg.appendChild(yAxisLabel);
 barChart(MAXlevelLondonBarChart[MAXlevelLondonBarChart.length-1])
 
 
-////////////////////////////////////////////////Page Render///////////////////////////////////////////////////////////////////
+///////////////////////////////////Maintain page's menu render and <header> output render ////////////////////////////////////
 document.getElementById("userLogin").innerHTML = "User:  "+String(person[0].user.login)
 document.getElementById("campus").innerHTML = "Campus:  "+String(person[0].campus).toUpperCase().charAt(0) + String(person[0].campus).slice(1)
 document.getElementById("grade").innerHTML = "ID:  "+ Number(person[0].user.id)
